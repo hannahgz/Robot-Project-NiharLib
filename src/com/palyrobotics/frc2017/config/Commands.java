@@ -36,23 +36,7 @@ public class Commands {
 	 * Stores numeric setpoints
 	 * @author Nihar
 	 */
-	public static class Setpoints {
-		public static final Optional<Double> NULLOPT = Optional.empty();
-		
-		public Optional<DriveSignal> drivePowerSetpoint = Optional.empty();
-		public Slider.SliderTarget sliderSetpoint = Slider.SliderTarget.NONE;
-		public Optional<Double> sliderCustomSetpoint = Optional.empty();
-
-		/**
-		 * Resets all the setpoints
-		 */
-		public void reset() {
-			drivePowerSetpoint = Optional.empty();
-			sliderSetpoint = Slider.SliderTarget.NONE;
-		}
-	}
 	// All robot setpoints
-	public Setpoints robotSetpoints = new Setpoints();
 	
 	/**
 	 * Class to store Joystick input
@@ -105,11 +89,7 @@ public class Commands {
 		copy.climberStickInput = this.climberStickInput;
 		
 		// Copy robot setpoints
-		copy.robotSetpoints = new Setpoints();
 		// Copy optionals that are present
-		robotSetpoints.drivePowerSetpoint.ifPresent((DriveSignal signal) -> copy.robotSetpoints.drivePowerSetpoint = Optional.of(signal));
-		copy.robotSetpoints.sliderSetpoint = robotSetpoints.sliderSetpoint;
-		robotSetpoints.sliderCustomSetpoint.ifPresent((Double setpoint) -> copy.robotSetpoints.sliderCustomSetpoint = Optional.of(setpoint));
 		return copy;
 	}
 

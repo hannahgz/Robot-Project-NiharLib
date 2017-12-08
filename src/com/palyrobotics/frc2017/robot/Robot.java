@@ -5,8 +5,6 @@ import com.palyrobotics.frc2017.config.Constants;
 import com.palyrobotics.frc2017.config.RobotState;
 import com.palyrobotics.frc2017.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2017.config.dashboard.DashboardValue;
-import com.palyrobotics.frc2017.robot.team254.lib.util.Loop;
-import com.palyrobotics.frc2017.robot.team254.lib.util.Looper;
 import com.palyrobotics.frc2017.subsystems.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -33,11 +31,6 @@ public class Robot extends IterativeRobot {
 	// Hardware Updater
 	private HardwareUpdater mHardwareUpdater;
 
-	private Looper mSubsystemLooper = new Looper();
-	
-	private double mStartTime;
-	private boolean startedClimberRoutine = false;
-
 	@Override
 	public void robotInit() {
 
@@ -57,25 +50,6 @@ public class Robot extends IterativeRobot {
 		}
 
 		mHardwareUpdater.initHardware();
-
-		mSubsystemLooper.register(new Loop() {
-			@Override
-			public void onStart() {
-
-			}
-
-			@Override
-			public void update() {
-				mHardwareUpdater.updateSensors(robotState);
-				updateSubsystems();
-				mHardwareUpdater.updateHardware();
-			}
-
-			@Override
-			public void onStop() {
-
-			}
-		});
 		System.out.println("End robotInit()");
 	}
 
@@ -95,7 +69,6 @@ public class Robot extends IterativeRobot {
 		mHardwareUpdater.configureTalons(false);
 		mHardwareUpdater.updateSensors(robotState);
 		mHardwareUpdater.updateHardware();
-		mStartTime = System.currentTimeMillis();
 		DashboardManager.getInstance().toggleCANTable(true);
 		commands.wantedDriveState = Drive.DriveState.DRIVING; 
 		commands = operatorInterface.updateCommands(commands);
@@ -108,7 +81,8 @@ public class Robot extends IterativeRobot {
 		// Update RobotState
 		// Gets joystick commands
 		// Updates commands based on routines
-
+		
+		commands = operatorInterface.updateCommands(commands);
 		mHardwareUpdater.updateSensors(robotState);
 		updateSubsystems();
 
@@ -129,6 +103,7 @@ public class Robot extends IterativeRobot {
 		mDrive.start();
 		mSlider.start();
 		mClimber.start();
+		System.out.println("started subsystems");
 	}
 
 	private void updateSubsystems() {

@@ -3,7 +3,9 @@ package com.palyrobotics.frc2017.robot;
 import com.palyrobotics.frc2017.config.Commands;
 import com.palyrobotics.frc2017.config.Commands.JoystickInput;
 import com.palyrobotics.frc2017.subsystems.*;
-import com.palyrobotics.frc2017.util.DoubleClickTimer;
+import com.palyrobotics.frc2017.subsystems.Climber.ClimberState;
+import com.palyrobotics.frc2017.subsystems.Drive.DriveState;
+import com.palyrobotics.frc2017.subsystems.Slider.SliderState;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -26,17 +28,7 @@ public class OperatorInterface {
 	private Joystick mTurnStick = mJoysticks.turnStick;
 	private Joystick mSliderStick = mJoysticks.sliderStick;
 	private Joystick mClimberStick = mJoysticks.climberStick;
-	
-	// Adjust parameters as needed, default for now
-	private DoubleClickTimer sliderLeft = new DoubleClickTimer();
-	private DoubleClickTimer sliderRight = new DoubleClickTimer();
 
-	/**
-	 * Helper method to only add routines that aren't already in wantedRoutines
-	 * @param commands Current set of commands being modified
-	 * @param wantedRoutine Routine to add to the commands
-	 * @return whether or not wantedRoutine was successfully added
-	 */
 
 	/**
 	 * Returns modified commands
@@ -48,7 +40,31 @@ public class OperatorInterface {
 		newCommands.rightStickInput = new JoystickInput(mTurnStick.getX(), mTurnStick.getY(), mTurnStick.getTrigger());
 		newCommands.sliderStickInput = new JoystickInput(mSliderStick.getX(), mSliderStick.getY(), mSliderStick.getTrigger());
 		newCommands.climberStickInput = new JoystickInput(mClimberStick.getX(), mClimberStick.getY(), mClimberStick.getTrigger());
-
+//		System.out.println("climber stick input: " + newCommands.climberStickInput.y);
+		
+		if(newCommands.climberStickInput.y > 0){
+			newCommands.wantedClimberState = ClimberState.MANUAL; 
+			
+		} else { 
+			newCommands.wantedClimberState = ClimberState.IDLE; 
+		}
+		
+		if(Math.abs(newCommands.sliderStickInput.x) > 0){
+			newCommands.wantedSliderState = SliderState.MANUAL; 
+			//System.out.println("Operator Interface: wantedSliderState = MANUAL");
+		} else {
+			newCommands.wantedSliderState = SliderState.IDLE; 
+			//System.out.println("Operator Interface: wantedSliderState = IDLE");
+		}
+		
+		if(Math.abs(newCommands.leftStickInput.y) > 0 || Math.abs(newCommands.rightStickInput.x) > 0){
+			newCommands.wantedDriveState = DriveState.DRIVING; 
+//			System.out.println("Operator Interface: wantedDriveState = DRIVING"); 
+		} else {
+			newCommands.wantedDriveState = DriveState.NEUTRAL; 
+//			System.out.println("Operator Interface: wantedDriveState = NEUTRAL");
+		}
+		
 		return newCommands;
-	}
+	}	
 }

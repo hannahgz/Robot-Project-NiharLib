@@ -1,6 +1,5 @@
 package com.palyrobotics.frc2017.config.dashboard;
 
-import com.palyrobotics.frc2017.config.Gains;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class DashboardManager {
@@ -28,7 +27,6 @@ public class DashboardManager {
 	public void robotInit() {
 		try {
 			this.robotTable = NetworkTable.getTable(TABLE_NAME);
-			Gains.initNetworkTableGains();
 			if (enableCANTable) {
 				this.canTable = NetworkTable.getTable(CAN_TABLE_NAME);
 				NetworkTable.setUpdateRate(.015);

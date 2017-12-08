@@ -72,29 +72,31 @@ class HardwareUpdater {
 	}
 	
 	void configureTalons(boolean calibrateSliderEncoder) {
-		configureDriveTalons();
+//		configureDriveTalons();
 		if (Constants.kRobotName == RobotName.STEIK) {
 			//Climber setup
-			CANTalon climber = HardwareAdapter.ClimberHardware.getInstance().climberTalon;
-			climber.reset();
-			climber.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-			climber.setPosition(0);	
-			climber.configMaxOutputVoltage(Constants.kClimberMaxVoltage);
-			climber.configPeakOutputVoltage(Constants.kClimberMaxVoltage, 0); // Should never be used
-			climber.ConfigRevLimitSwitchNormallyOpen(false); // Prevent the motor from spinning backwards
-			climber.ConfigFwdLimitSwitchNormallyOpen(true);
-			climber.enable();
-			
+//			CANTalon climber = HardwareAdapter.ClimberHardware.getInstance().climberTalon;
+//			climber.reset();
+//			climber.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+//			climber.setPosition(0);	
+//			climber.configMaxOutputVoltage(Constants.kClimberMaxVoltage);
+//			climber.configPeakOutputVoltage(Constants.kClimberMaxVoltage, 0); // Should never be used
+//			climber.ConfigRevLimitSwitchNormallyOpen(false); // Prevent the motor from spinning backwards
+//			climber.ConfigFwdLimitSwitchNormallyOpen(true);
+//			climber.enable();
+//			
 			CANTalon slider = HardwareAdapter.SliderHardware.getInstance().sliderTalon;
 			// Reset and turn on the Talon 
 			slider.reset();
-			slider.clearStickyFaults();
 			slider.setStatusFrameRateMs(CANTalon.StatusFrameRate.General, 5);
 			slider.enable();
 			slider.enableControl();
 			slider.configMaxOutputVoltage(Constants.kSliderMaxVoltage);
 			slider.configPeakOutputVoltage(Constants.kSliderPeakOutputVoltage, -Constants.kSliderPeakOutputVoltage);
-			if (calibrateSliderEncoder) {
+			
+			System.out.println("configured slider talon");
+			
+			/*if (calibrateSliderEncoder) {
 				// Set up the Talon to read from a relative CTRE mag encoder sensor
 				slider.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
 				// Calibrate the encoder
@@ -107,6 +109,7 @@ class HardwareUpdater {
 					slider.setPosition(0);
 				}
 			}
+			*/ 
 		}
 	}
 	
@@ -205,63 +208,8 @@ class HardwareUpdater {
 	 * Updates all the sensor data taken from the hardware
 	 */
 	void updateSensors(RobotState robotState) {
-		robotState.leftControlMode = HardwareAdapter.DrivetrainHardware.getInstance().leftMasterTalon.getControlMode();
-		robotState.rightControlMode = HardwareAdapter.DrivetrainHardware.getInstance().rightMasterTalon.getControlMode();
-		robotState.leftSetpoint = HardwareAdapter.DrivetrainHardware.getInstance().leftMasterTalon.getSetpoint();
-		robotState.rightSetpoint = HardwareAdapter.DrivetrainHardware.getInstance().rightMasterTalon.getSetpoint();
-		CANTalon leftMasterTalon = HardwareAdapter.DrivetrainHardware.getInstance().leftMasterTalon;
-		CANTalon rightMasterTalon = HardwareAdapter.DrivetrainHardware.getInstance().rightMasterTalon;
-		robotState.drivePose.leftEnc = leftMasterTalon.getPosition();
-		robotState.drivePose.leftEncVelocity = leftMasterTalon.getEncVelocity();
-		robotState.drivePose.leftSpeed = leftMasterTalon.getSpeed();
-		// rightEnc is not getEncPosition() because that returns the absolute
-		// position, not the inverted one, which we want.
-		robotState.drivePose.rightEnc = rightMasterTalon.getPosition();
-		robotState.drivePose.rightEncVelocity = rightMasterTalon.getEncVelocity();
-		robotState.drivePose.rightSpeed = rightMasterTalon.getSpeed();
-		
-		if (leftMasterTalon.getControlMode() == TalonControlMode.MotionMagic) {
-			robotState.drivePose.leftMotionMagicPos = Optional.of(leftMasterTalon.getMotionMagicActTrajPosition());
-			robotState.drivePose.leftMotionMagicVel = Optional.of(leftMasterTalon.getMotionMagicActTrajVelocity());
-		}
-		else {
-			robotState.drivePose.leftMotionMagicPos = Optional.empty();
-			robotState.drivePose.leftMotionMagicVel = Optional.empty();
-		}
-		
-		if (rightMasterTalon.getControlMode() == TalonControlMode.MotionMagic) {
-			robotState.drivePose.rightMotionMagicPos = Optional.of(rightMasterTalon.getMotionMagicActTrajPosition());
-			robotState.drivePose.rightMotionMagicVel = Optional.of(rightMasterTalon.getMotionMagicActTrajVelocity());
-		}
-		else {
-			robotState.drivePose.rightMotionMagicPos = Optional.empty();
-			robotState.drivePose.rightMotionMagicVel = Optional.empty();
-		}
-		
-		if (leftMasterTalon.getControlMode().isPID() || leftMasterTalon.getControlMode() == TalonControlMode.MotionMagic) {
-			robotState.drivePose.leftError = Optional.of(leftMasterTalon.getError());
-		} else {
-			robotState.drivePose.leftError = Optional.empty();
-		}
-		if (rightMasterTalon.getControlMode().isPID() || rightMasterTalon.getControlMode() == TalonControlMode.MotionMagic) {
-			robotState.drivePose.rightError = Optional.of(rightMasterTalon.getError());
-		} else {
-			robotState.drivePose.rightError = Optional.empty();
-		}
 		if (Constants.kRobotName == Constants.RobotName.STEIK) {
-			CANTalon sliderTalon = HardwareAdapter.SliderHardware.getInstance().sliderTalon;
-			robotState.sliderEncoder = sliderTalon.getEncPosition();
 			robotState.sliderPotentiometer = HardwareAdapter.SliderHardware.getInstance().sliderPotentiometer.getValue();
-			robotState.sliderVelocity = sliderTalon.getSpeed();
-			if (sliderTalon.getControlMode().isPID()) {
-				if (sliderTalon.getSetpoint() == mSlider.getOutput().getSetpoint()) {
-					robotState.sliderClosedLoopError = Optional.of(sliderTalon.getClosedLoopError());
-				} else {
-					robotState.sliderClosedLoopError = Optional.empty();
-				}
-			} else {
-				robotState.sliderClosedLoopError = Optional.empty();
-			}
 		}
 		if (HardwareAdapter.getInstance().getClimber().climberTalon != null) {
 			robotState.climberEncoder = HardwareAdapter.ClimberHardware.getInstance().climberTalon.getPosition();
@@ -275,36 +223,34 @@ class HardwareUpdater {
 	 * Updates the hardware to run with output values of subsystems
 	 */
 	void updateHardware() {
-		// On Derica only update the drivetrain
+	
 		if (Constants.kRobotName == Constants.RobotName.STEIK) {
 			updateSteikSubsystems();
 		}
+//		updateDrivetrain(); 
 	}
 
 	private void updateSteikSubsystems() {
 		updateCANTalonSRX(HardwareAdapter.getInstance().getSlider().sliderTalon, mSlider.getOutput());
-		// CLIMBER
-		
-		updateCANTalonSRX(HardwareAdapter.getInstance().getClimber().climberTalon, mClimber.getOutput());
+//		updateCANTalonSRX(HardwareAdapter.getInstance().getClimber().climberTalon, mClimber.getOutput());
+		//HardwareAdapter.getInstance().getClimber().climberTalon.set(mClimber.getOutput());
 	}
 
 	/**
 	 * Updates the drivetrain on Derica, Steik 
 	 * Uses CANTalonOutput and can run off-board control loops through SRX
 	 */
-
+	private void updateDrivetrain() { 
+		updateCANTalonSRX(HardwareAdapter.getInstance().getDrivetrain().leftMasterTalon, mDrive.getDriveSignal().leftMotor);
+		updateCANTalonSRX(HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon, mDrive.getDriveSignal().rightMotor);
+	}
 	/**
 	 * Helper method for processing a CANTalonOutput for an SRX
 	 */
 	private void updateCANTalonSRX(CANTalon talon, CANTalonOutput output) {
 		talon.changeControlMode(output.getControlMode());
-		if(output.getControlMode().isPID() || output.getControlMode() == TalonControlMode.MotionMagic) {
-			talon.setPID(output.gains.P, output.gains.I, output.gains.D, output.gains.F, output.gains.izone, output.gains.rampRate, output.profile);
-		}
-		if (output.getControlMode() == CANTalon.TalonControlMode.MotionMagic) {
-			talon.setMotionMagicAcceleration(output.accel);
-			talon.setMotionMagicCruiseVelocity(output.cruiseVel);
-		}
 		talon.set(output.getSetpoint());
+		System.out.println("hw updater output control mode: " + output.getControlMode());
+		System.out.println("hw updater slider setpoint: " + output.getSetpoint());
 	}
 }

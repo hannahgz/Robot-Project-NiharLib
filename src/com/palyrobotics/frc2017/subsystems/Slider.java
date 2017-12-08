@@ -1,15 +1,10 @@
 package com.palyrobotics.frc2017.subsystems;
 
 import com.palyrobotics.frc2017.config.Commands;
-import com.palyrobotics.frc2017.config.Constants;
-import com.palyrobotics.frc2017.config.Gains;
 import com.palyrobotics.frc2017.config.RobotState;
-import com.palyrobotics.frc2017.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2017.config.dashboard.DashboardValue;
 import com.palyrobotics.frc2017.util.CANTalonOutput;
-
-import java.util.HashMap;
-import java.util.Optional;
+//import com.palyrobotics.frc2017.robot.HardwareAdapter;
 
 /**
  * Created by Nihar on 1/28/17.
@@ -23,27 +18,17 @@ public class Slider extends Subsystem{
 	}
 
 	//Miscellaneous constants
-	private static final int kPotentiometerTolerance = 40;
-	
-	//all code assumes that right is 0 and left and center are both positive on both pot and encoder
+	private static final int kPotentiometerToleranceMax = 2900;
+	private static final int kPotentiometerToleranceMin = 2300; 
 	
 	public enum SliderState {
 		IDLE,
 		MANUAL,
 	}
 	
-	public enum SliderTarget {
-		NONE,
-		CUSTOM,
-		DONE,
-		LEFT,
-		CENTER,
-		RIGHT
-	}
+	
 	
 	private SliderState mState;
-	private SliderTarget mTarget;
-	
 	private RobotState mRobotState;
 	private CANTalonOutput mOutput = new CANTalonOutput();
 	private DashboardValue sliderPotentiometer;
@@ -57,15 +42,12 @@ public class Slider extends Subsystem{
 	@Override
 	public void start() {
 		mState = SliderState.IDLE;
-		mTarget = SliderTarget.NONE;
-		mOutput.setVoltage(0);
+		
 	}
 	
 	@Override
 	public void stop() {
 		mState = SliderState.IDLE;
-		mTarget = SliderTarget.NONE;
-		mOutput.setVoltage(0);
 	}
 	
 	/**
@@ -76,17 +58,17 @@ public class Slider extends Subsystem{
 	@Override
 	public void update(Commands commands, RobotState robotState) {
 		mRobotState = robotState;
-		mState = commands.wantedSliderState.MANUAL; 
+		mState = commands.wantedSliderState; 
 		sliderPotentiometer.updateValue(robotState.sliderPotentiometer);
 		switch(mState) {
 			case IDLE:
-				mTarget = SliderTarget.NONE;
 				mOutput.setVoltage(0);
 				break;
 			case MANUAL:
-				mTarget = SliderTarget.NONE;
 				double potValue = mRobotState.sliderPotentiometer; 
-				if(Math.abs(potValue) < kPotentiometerTolerance || (potValue >= kPotentiometerTolerance && commands.sliderStickInput.x < 0) || (potValue <= kPotentiometerTolerance && commands.sliderStickInput.x > 0)){
+				double sliderValue = commands.sliderStickInput.x; 
+				if(((potValue > kPotentiometerToleranceMin) && (potValue < kPotentiometerToleranceMax)) || (potValue >= kPotentiometerToleranceMax && sliderValue > 0) || (potValue <= kPotentiometerToleranceMin && sliderValue <  0)){
+					System.out.println("setting slider output values");
 					setManualOutput(commands);
 				}
 				else{
@@ -103,9 +85,8 @@ public class Slider extends Subsystem{
 	 * Encapsulate to use in both run and update methods
 	 */
 	private void setManualOutput(Commands commands) {
-		mOutput.setVoltage(commands.sliderStickInput.x * 12);
+		mOutput.setVoltage(commands.sliderStickInput.x * 6); 
+		System.out.println("slider output value: " + getOutput());
+//		mOutput.setVoltage(HardwareAdapter.getInstance().getJoysticks().sliderStick.getX() * 12);
 	}
-	
-	
-
 }

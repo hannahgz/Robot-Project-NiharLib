@@ -71,34 +71,16 @@ public class HardwareAdapter {
 		public static void resetEncoder() {
 			instance.sliderTalon.reset();
 		}
-
+		
 		private SliderHardware() {
 			if (Constants.kRobotName == Constants.RobotName.STEIK){
 				sliderTalon = new CANTalon(Constants.kSteikSliderMotorDeviceID);
 				sliderPotentiometer = new AnalogInput(Constants.kSteikSliderPotentiometerPort);
+				System.out.println("slider hw initialized");
 			}
 			else {
 				sliderTalon = null;
 				sliderPotentiometer = null;
-			}
-		}
-	}
-
-	/**
-	 * SPATULA - 1 double solenoid
-	 */
-	public static class SpatulaHardware {
-		private static SpatulaHardware instance = new SpatulaHardware();
-		public static SpatulaHardware getInstance() {
-			return instance;
-		}
-		public final DoubleSolenoid spatulaSolenoid;
-
-		private SpatulaHardware() {
-			if (Constants.kRobotName == Constants.RobotName.STEIK) {
-				spatulaSolenoid = new DoubleSolenoid(Constants.kSteikSpatulaPortExtend, Constants.kSteikSpatulaPortRetract);
-			} else {
-				spatulaSolenoid = null;
 			}
 		}
 	}
@@ -156,8 +138,6 @@ public class HardwareAdapter {
 		public final Joystick sliderStick = new Joystick(2);
 		public final Joystick climberStick = new Joystick(3);
 
-		private Joysticks() {
-		}
 	}
 
 	// Wrappers to access hardware groups
@@ -166,9 +146,6 @@ public class HardwareAdapter {
 	}
 	public SliderHardware getSlider() {
 		return SliderHardware.getInstance();
-	}
-	public SpatulaHardware getSpatula() {
-		return SpatulaHardware.getInstance();
 	}
 	public IntakeHardware getIntake() {
 		return IntakeHardware.getInstance();
