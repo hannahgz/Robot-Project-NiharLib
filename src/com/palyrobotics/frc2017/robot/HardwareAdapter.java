@@ -2,7 +2,6 @@ package com.palyrobotics.frc2017.robot;
 
 import com.ctre.CANTalon;
 import com.palyrobotics.frc2017.config.Constants;
-import com.palyrobotics.frc2017.config.Constants2016;
 import edu.wpi.first.wpilibj.*;
 /**
  * Represents all hardware components of the robot.
@@ -39,11 +38,11 @@ public class HardwareAdapter {
 
 		private DrivetrainHardware() {
 			if(Constants.kRobotName == Constants.RobotName.DERICA) {
-				leftMasterTalon = new CANTalon(Constants2016.kDericaLeftDriveMasterDeviceID);
-				leftSlave1Talon = new CANTalon(Constants2016.kDericaLeftDriveSlaveDeviceID);
+				leftMasterTalon = null; 
+				leftSlave1Talon = null; 
 				leftSlave2Talon = null;
-				rightMasterTalon = new CANTalon(Constants2016.kDericaRightDriveMasterDeviceID);
-				rightSlave1Talon = new CANTalon(Constants2016.kDericaRightDriveSlaveDeviceID);
+				rightMasterTalon = null; 
+				rightSlave1Talon = null; 
 				rightSlave2Talon = null;
 			} else {
 				leftMasterTalon = new CANTalon(Constants.kSteikLeftDriveMasterDeviceID);
@@ -77,8 +76,7 @@ public class HardwareAdapter {
 				sliderTalon = new CANTalon(Constants.kSteikSliderMotorDeviceID);
 				sliderPotentiometer = new AnalogInput(Constants.kSteikSliderPotentiometerPort);
 				System.out.println("slider hw initialized");
-			}
-			else {
+			} else {
 				sliderTalon = null;
 				sliderPotentiometer = null;
 			}
@@ -88,6 +86,7 @@ public class HardwareAdapter {
 	/*
 	 * INTAKE - 1 VictorSP
 	 */
+	/*
 	public static class IntakeHardware {
 		private static IntakeHardware instance = new IntakeHardware();
 
@@ -103,7 +102,7 @@ public class HardwareAdapter {
 				intakeMotor = null;
 			}
 		}
-	}
+	}*/ 
 
 	/*
 	 * CLIMBER - 1 CANTalon
@@ -147,9 +146,9 @@ public class HardwareAdapter {
 	public SliderHardware getSlider() {
 		return SliderHardware.getInstance();
 	}
-	public IntakeHardware getIntake() {
+	/*public IntakeHardware getIntake() {
 		return IntakeHardware.getInstance();
-	}
+	}*/ 
 	public ClimberHardware getClimber() {
 		return ClimberHardware.getInstance();
 	}

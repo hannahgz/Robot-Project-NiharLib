@@ -4,6 +4,7 @@ import com.palyrobotics.frc2017.config.Commands;
 import com.palyrobotics.frc2017.config.RobotState;
 import com.palyrobotics.frc2017.config.dashboard.DashboardValue;
 import com.palyrobotics.frc2017.util.CANTalonOutput;
+import  com.palyrobotics.frc2017.config.Constants;
 //import com.palyrobotics.frc2017.robot.HardwareAdapter;
 
 /**
@@ -18,15 +19,13 @@ public class Slider extends Subsystem{
 	}
 
 	//Miscellaneous constants
-	private static final int kPotentiometerToleranceMax = 2900;
-	private static final int kPotentiometerToleranceMin = 2300; 
+	//private static final int kPotentiometerToleranceMax = 2900;
+	//private static final int kPotentiometerToleranceMin = 2300; 
 	
 	public enum SliderState {
 		IDLE,
 		MANUAL,
 	}
-	
-	
 	
 	private SliderState mState;
 	private RobotState mRobotState;
@@ -67,7 +66,7 @@ public class Slider extends Subsystem{
 			case MANUAL:
 				double potValue = mRobotState.sliderPotentiometer; 
 				double sliderValue = commands.sliderStickInput.x; 
-				if(((potValue > kPotentiometerToleranceMin) && (potValue < kPotentiometerToleranceMax)) || (potValue >= kPotentiometerToleranceMax && sliderValue > 0) || (potValue <= kPotentiometerToleranceMin && sliderValue <  0)){
+				if(((potValue > Constants.kPotentiometerToleranceMin) && (potValue < Constants.kPotentiometerToleranceMax)) || (potValue >= Constants.kPotentiometerToleranceMax && sliderValue > 0) || (potValue <= Constants.kPotentiometerToleranceMin && sliderValue <  0)){
 					System.out.println("setting slider output values");
 					setManualOutput(commands);
 				}

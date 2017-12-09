@@ -51,15 +51,16 @@ public class Drive extends Subsystem{
 	}
 	public void update(Commands commands, RobotState state) {
 		mState = commands.wantedDriveState; 
-		leftSpeed = -commands.leftStickInput.y; 
-		rightSpeed = commands.leftStickInput.y; 
-		robotRotation = commands.rightStickInput.x; 
+		leftSpeed = -commands.rightStickInput.x; 
+		rightSpeed = commands.rightStickInput.x; 
+		robotRotation = commands.leftStickInput.y;  
 
 		switch(mState){
 			case DRIVING: 	
 				leftSpeed += robotRotation;
 				rightSpeed = -rightSpeed;
 				rightSpeed -= robotRotation; 
+
 				setDriveOutputs(mSignal); 
 			case NEUTRAL: 
 				setDriveOutputs(DriveSignal.getNeutralSignal());
@@ -70,8 +71,8 @@ public class Drive extends Subsystem{
 	}
 	private void setDriveOutputs(DriveSignal signal) {
 		mSignal = signal;
-		mSignal.leftMotor.setVoltage(leftSpeed * 6);
-		mSignal.rightMotor.setVoltage(rightSpeed * 6);
+		mSignal.leftMotor.setVoltage(-leftSpeed * 6);
+		mSignal.rightMotor.setVoltage(-rightSpeed * 6);
 	}
 	
 }

@@ -75,15 +75,15 @@ class HardwareUpdater {
 //		configureDriveTalons();
 		if (Constants.kRobotName == RobotName.STEIK) {
 			//Climber setup
-//			CANTalon climber = HardwareAdapter.ClimberHardware.getInstance().climberTalon;
-//			climber.reset();
-//			climber.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-//			climber.setPosition(0);	
-//			climber.configMaxOutputVoltage(Constants.kClimberMaxVoltage);
-//			climber.configPeakOutputVoltage(Constants.kClimberMaxVoltage, 0); // Should never be used
-//			climber.ConfigRevLimitSwitchNormallyOpen(false); // Prevent the motor from spinning backwards
-//			climber.ConfigFwdLimitSwitchNormallyOpen(true);
-//			climber.enable();
+			CANTalon climber = HardwareAdapter.ClimberHardware.getInstance().climberTalon;
+			climber.reset();
+			climber.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+			climber.setPosition(0);	
+			climber.configMaxOutputVoltage(Constants.kClimberMaxVoltage);
+			climber.configPeakOutputVoltage(Constants.kClimberMaxVoltage, 0); // Should never be used
+			climber.ConfigRevLimitSwitchNormallyOpen(false); // Prevent the motor from spinning backwards
+			climber.ConfigFwdLimitSwitchNormallyOpen(true);
+			climber.enable();
 //			
 			CANTalon slider = HardwareAdapter.SliderHardware.getInstance().sliderTalon;
 			// Reset and turn on the Talon 
@@ -227,13 +227,12 @@ class HardwareUpdater {
 		if (Constants.kRobotName == Constants.RobotName.STEIK) {
 			updateSteikSubsystems();
 		}
-//		updateDrivetrain(); 
+		updateDrivetrain(); 
 	}
 
 	private void updateSteikSubsystems() {
 		updateCANTalonSRX(HardwareAdapter.getInstance().getSlider().sliderTalon, mSlider.getOutput());
-//		updateCANTalonSRX(HardwareAdapter.getInstance().getClimber().climberTalon, mClimber.getOutput());
-		//HardwareAdapter.getInstance().getClimber().climberTalon.set(mClimber.getOutput());
+		updateCANTalonSRX(HardwareAdapter.getInstance().getClimber().climberTalon, mClimber.getOutput());
 	}
 
 	/**

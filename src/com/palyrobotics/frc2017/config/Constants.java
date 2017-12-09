@@ -11,7 +11,7 @@ public class Constants extends ConstantsBase {
 	public static final RobotName kRobotName = RobotName.STEIK;
 	public static final boolean kCalibrateSliderWithPotentiometer = true;
 	
-	// Android app information
+	/*// Android app information
 	public static String kPackageName = "com.frc8.team8vision";
 	public static String kActivityName = "MainActivity";
 	public static String kVisionDataFileName = "data.json";
@@ -22,7 +22,7 @@ public class Constants extends ConstantsBase {
 	public static int kMJPEGVisionSocketUpdateRate = 90;
 	public static int kVisionDataPort = 8008;
 	public static int kVideoPort = 8009;
-	public static int kMJPEGServerSocketPort = 1180;
+	public static int kMJPEGServerSocketPort = 1180; */ 
 	
 	//Logger constants have been moved to a separate file in the logger package until the problem is fixed
 	 
@@ -175,6 +175,9 @@ public class Constants extends ConstantsBase {
 	public static int kSteikSliderPotentiometerPort = 3;
 	public static int kSteikSliderPotentiometerFullRange = 0;
 	public static int kSteikSliderPotentiometerOffset;
+	
+	public static int kPotentiometerToleranceMax = 2900; 
+	public static int kPotentiometerToleranceMin = 2300; 
 
 	// SPATULA
 	public static int kSteikSpatulaPortExtend = 1;
